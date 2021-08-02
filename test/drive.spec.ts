@@ -1,6 +1,6 @@
 import test from 'japa'
 
-import { DownloadGoogleDriveAPI } from '../Features/GoogleDriveAPI/Downloader/index'
+import { DownloadGoogleDriveAPI } from '../app/Features/GoogleDriveAPI/Downloader/index'
 
 import fs from 'fs'
 

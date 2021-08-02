@@ -1,11 +1,12 @@
 import { HttpContextContract } from '@ioc:Adonis/Core/HttpContext'
-import { schema } from '@ioc:Adonis/Core/Validator'
 import readXlsxFile from 'read-excel-file/node'
 
 import Exam from 'App/Models/Exam'
 import Questao from 'App/Models/Questoes'
-import ExcelQuestion from '../../../Features/BancoQuestoes/ExcelQuestions'
-import {EnemArea, Materias, Frentes, Alternativa } from '../../../Features/BancoQuestoes/ConstantesEnem'
+import ExcelQuestion from '../../Features/BancoQuestoes/ExcelQuestions'
+//import {EnemArea, Materias, Frentes, Alternativa } from '../../Features/BancoQuestoes/ConstantesEnem'
+
+import ValidatorQuestion from '../../Validators/QuestionCreateValidator'
 
 import fs from 'fs'
 
@@ -17,22 +18,9 @@ export default class QuestionsController {
       return response.status(401).json({ error: 'Você não tem Autorização' })
     }
 
-    const validationSchema = schema.create({
-      enem_area: schema.enum(Object.values(EnemArea)),
-      materia: schema.enum(Object.values(Materias)),
-      frente_1: schema.enum(Object.values(Frentes)),
-      frente_2: schema.enum(Object.values(Frentes)),
-      frente_3: schema.enum(Object.values(Frentes)),
-      ano: schema.number(),
-      exam_id: schema.number(),
-      alternativa: schema.enum(Object.values(Alternativa)),
-    })
+    const questionDetails = await request.validate(ValidatorQuestion)
 
-    const questionDetails = await request.validate({
-      schema: validationSchema,
-    })
-
-    const myExam = await Exam.findBy('id', questionDetails.exam_id)
+    const myExam = await Exam.findBy('id', questionDetails.examId)
 
     if (myExam === null) {
       return response.status(400).json({ msg: 'O Exame selecionado não encontrado em nossa base' })
@@ -48,7 +36,7 @@ export default class QuestionsController {
     }
 
     if (myImage.hasErrors) {
-      return myImage.errors
+      return response.status(400).json({ error: myImage.errors }) 
     }
 
     const name = `${new Date().getTime()}.${myImage.extname}`
@@ -65,14 +53,22 @@ export default class QuestionsController {
 
     const questao = new Questao()
 
-    questao.user_id = auth.user.id
-    questao.Imagem_link = name
-    questao.exam_id = questionDetails.exam_id
-    questao.enem_area = questionDetails.enem_area
+    questao.userId = auth.user.id
+    questao.imagemLink = name
+    questao.examId = questionDetails.examId
+    questao.enemArea = questionDetails.enemArea
+    questao.caderno = questionDetails.caderno
+    questao.numero = questionDetails.numero
+    questao.textoQuestao = questionDetails.textoQuestao
+    questao.textoAlternativaA = questionDetails.textoAlternativaA
+    questao.textoAlternativaB = questionDetails.textoAlternativaB
+    questao.textoAlternativaC = questionDetails.textoAlternativaC
+    questao.textoAlternativaD = questionDetails.textoAlternativaD
+    questao.textoAlternativaE =  questionDetails.textoAlternativaE
     questao.materia = questionDetails.materia
-    questao.frente_1 = questionDetails.frente_1
-    questao.frente_2 = questionDetails.frente_2
-    questao.frente_3 = questionDetails.frente_3
+    questao.frente1 = questionDetails.frente1
+    questao.frente2 = questionDetails.frente2
+    questao.frente3 = questionDetails.frente3
     questao.ano = questionDetails.ano
     questao.alternativa = questionDetails.alternativa
 
@@ -90,7 +86,7 @@ export default class QuestionsController {
 
     const questao = await Questao.findByOrFail('id', IdQuestao)
 
-    const path = this.replacePath(questao.Imagem_link, 'images')
+    const path = this.replacePath(questao.imagemLink, 'images')
 
     try {
       fs.unlinkSync(path)
@@ -147,12 +143,12 @@ export default class QuestionsController {
     const excelClass = new ExcelQuestion(myFile, auth.user?.id)
     const data = excelClass.verify()
 
-    if(data.resp.length > 0) {
+    /* if(data.resp) {
       const errorCadastroFinal = await excelClass.CadastroQuestao1a1()
       data.log.concat(errorCadastroFinal)
     }
     
-    return response.status(200).json({ error: data.log })
+    return response.status(200).json({ error: data.log }) */
   }
   
   public async ListarQuestoes({ response }: HttpContextContract) {

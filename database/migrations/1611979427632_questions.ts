@@ -1,5 +1,5 @@
 import BaseSchema from '@ioc:Adonis/Lucid/Schema'
-import { EnemArea, Materias, Frentes, StatusQuestion } from '../../Features/BancoQuestoes/ConstantesEnem'
+import { EnemArea, Materias, Frentes, StatusQuestion } from '../../app/Features/BancoQuestoes/ConstantesEnem'
 
 export default class Questions extends BaseSchema {
   protected tableName = 'questoes'
@@ -32,15 +32,23 @@ export default class Questions extends BaseSchema {
       table.enum('frente_1', Frentes).notNullable()
       table.enum('frente_2', Frentes).notNullable()
       table.enum('frente_3', Frentes).notNullable()
+      table.enum('caderno', ['Azul', 'Amarelo', 'Rosa', 'Branco', 'Cinza'])
+      table.integer('numero').unsigned()
+      table.enum('alternativa', ['A', 'B', 'C', 'D', 'E']).notNullable()
+      table.text('texto_questao')
+      table.text('texto_alternativa_a')
+      table.text('texto_alternativa_b')
+      table.text('texto_alternativa_c')
+      table.text('texto_alternativa_d')
+      table.text('texto_alternativa_e')
       // Toda questão é cadastrada como pendente e precisa ser aprovada por um adm/professor
       table.integer('dificuldade').defaultTo(0).notNullable()
       // Quantidades de vezes que essa questão foi respondida
-      table.integer('vezesRespondida').defaultTo(0).notNullable()
+      table.integer('vezes_respondida').defaultTo(0).notNullable()
       // Quantidade de vezes que essa questão apareceu em simulados diferentes
-      table.integer('quantidadeTestes').defaultTo(0).notNullable()
+      table.integer('quantidade_testes').defaultTo(0).notNullable()
       table.json('historico').defaultTo(0).notNullable()
       table.enum('status', StatusQuestion).defaultTo('aprovada')
-      table.enum('alternativa', ['A', 'B', 'C', 'D', 'E']).notNullable()
       table.timestamps(true)
     })
   }

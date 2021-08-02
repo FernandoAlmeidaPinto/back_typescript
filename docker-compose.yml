@@ -31,8 +31,6 @@ services:
       - ${PORT}:3333
     networks: 
       - develop-networks
-    volumes: 
-      - ./build:/var/www/
     entrypoint: ["yarn"]
     command: ['migration']
     command: ['production']
@@ -56,6 +54,7 @@ services:
       - develop-networks
     depends_on: 
       - app
+      - db
 
 networks:
   develop-networks:

@@ -2,7 +2,7 @@ import User from 'App/Models/User'
 import Token from 'App/Models/Token'
 import { schema, rules } from '@ioc:Adonis/Core/Validator'
 import { HttpContextContract } from '@ioc:Adonis/Core/HttpContext'
-import CreateUser from '../../../Features/Auth/createUser'
+import CreateUser from '../../Features/Auth/createUser'
 
 export default class AuthController {
   public async register({ auth, request, response }: HttpContextContract) {

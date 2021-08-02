@@ -1,6 +1,6 @@
 import { HttpContextContract } from '@ioc:Adonis/Core/HttpContext'
 import { schema, rules } from '@ioc:Adonis/Core/Validator'
-import { Localizacao } from '../../../Features/BancoQuestoes/Enums/EnumLocalizacao'
+import { Localizacao } from '../../Features/BancoQuestoes/Enums/EnumLocalizacao'
 import Exam from 'App/Models/Exam'
 
 export default class ExamsController {
@@ -11,7 +11,7 @@ export default class ExamsController {
     const exam = new Exam()
 
     const validationSchema = schema.create({
-      exam: schema.string({ trim: true }, [rules.unique({ table: 'exams', column: 'exam' })]),
+      exame: schema.string({ trim: true }, [rules.unique({ table: 'exams', column: 'exam' })]),
       localizacao: schema.enum(Object.values(Localizacao)),
     })
 
@@ -20,7 +20,7 @@ export default class ExamsController {
     })
 
     exam.user_id = auth.user?.id
-    exam.exam = novoExam.exam
+    exam.exam = novoExam.exame
     exam.localizacao = novoExam.localizacao
     await exam.save()
 
