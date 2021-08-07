@@ -49,8 +49,8 @@ export default class AuthController {
   }
 
   public async login({ request, auth, response }: HttpContextContract) {
-    const email = request.input('email')
-    const password = request.input('password')
+
+    const { email, password } = await request.validate(LoginValidator)
 
     const user = await User.findByOrFail('email', email)
     const oldtoken = await Token.findBy('user_id', user.toJSON().id)
