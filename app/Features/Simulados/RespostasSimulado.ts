@@ -15,7 +15,7 @@ export default class RespostasSimulado {
 
       const send: RespostaCorreta = {
         questao: question[0],
-        respostaEstudante: element.alternativa,
+        respostaEstudante: element.RespostaEstudante,
         respostaCorreta: question[0].alternativa,
       }
       this.ObjRespostasCorretas.push(send)
