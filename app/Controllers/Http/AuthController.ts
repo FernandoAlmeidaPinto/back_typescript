@@ -114,4 +114,13 @@ export default class AuthController {
     user.admin = user.admin ? false : true
     await user.save()
   }
+
+  public async delete({ auth, params, response }: HttpContextContract) {
+    if(auth.user?.admin == true){
+      const user = await User.findByOrFail('id', params.id)
+      await user.delete()
+      return response.status(200).json({ msg: 'User Deletado' })
+    }
+    return response.status(401).json({ msg: 'Não Autorizado' })
+  }
 }
