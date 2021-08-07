@@ -11,7 +11,8 @@
     "migration": "node ace migration:run --force",
     "demigration": "node ace migration:rollback --force",
     "migrationstatus": "node ace migration:status --force",
-    "production": "pm2-runtime server.js --name vcnafacul"
+    "production": "pm2-runtime server.js --name vcnafacul",
+    "test": "node -r @adonisjs/assembler/build/register japaFile.ts"
   },
   "devDependencies": {
     "@adonisjs/assembler": "^3.0.0",
