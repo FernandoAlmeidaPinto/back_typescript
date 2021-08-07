@@ -1,8 +1,7 @@
 import User from 'App/Models/User'
 import test from 'japa'
 import supertest from 'supertest'
-
-const BASE_URL = 'http://localhost:3333'
+import { baseURL } from './config'
 
 let send = {
   email: 'anotherTest2@gmail.com',
@@ -36,20 +35,20 @@ test.group('Question', (group) => {
   })
 
   test('create a new Question', async (assert) => {
-    const login = await supertest(BASE_URL).post('/login').expect(200).send({
+    const login = await supertest(baseURL).post('/login').expect(200).send({
       email: send.email,
       password: send.password,
     })
 
-    await supertest(BASE_URL)
+    const responseExame = await supertest(baseURL)
       .post('/novoexame')
       .expect(200)
-      .send({ exam: 'enem', localizacao: 'BR' })
+      .send({ exame: 'enem', localizacao: 'BR' })
       .set({ Authorization: `bearer ${login.body.token.token}` })
 
     const pathImage = __dirname + '/files/ImageTest.jpg'
 
-    const responseQuestion = await supertest(BASE_URL)
+    const responseQuestion = await supertest(baseURL)
       .post('/novaquestao')
       .expect(200)
       .field('enemArea', 'Ciências Humanas')
@@ -71,14 +70,15 @@ test.group('Question', (group) => {
       .attach('image', pathImage)
       .set({ Authorization: `bearer ${login.body.token.token}` })
 
-    const selectQuestion = await supertest(BASE_URL)
+    const selectQuestion = await supertest(baseURL)
       .get(`/selecionarquestao/${responseQuestion.body.id}`)
       .expect(200)
       .set({ Authorization: `bearer ${login.body.token.token}` })
 
+
     assert.equal(selectQuestion.body.materia, 'História')
 
-    await supertest(BASE_URL)
+    await supertest(baseURL)
       .delete(`/deletarquestao/${responseQuestion.body.id}`)
       .expect(200)
       .set({ Authorization: `bearer ${login.body.token.token}` })
