@@ -150,10 +150,7 @@ export default class ExcelQuestion {
       this.errorQuestao = this.errorQuestao ? true : this.LogGeneration(linha, 5, Frentes, 'Frente')
       this.errorQuestao = this.errorQuestao ? true : this.LogGeneration(linha, 6, Frentes, 'Frente')
       this.errorQuestao = this.errorQuestao ? true : this.LogGeneration(linha, 7, Frentes, 'Frente')
-/*      this.errorQuestao = this.errorQuestao ? true : this.LogGeneration(linha, 8, typeCorrect, 'Alternativa') */
-      if(this.errorQuestao) {
-        console.log(linha)
-      }
+      this.errorQuestao = this.errorQuestao ? true : this.LogGeneration(linha, 10, typeCorrect, 'Alternativa')
       return this.errorQuestao
   }
 
