@@ -1,23 +1,15 @@
 import { HttpContextContract } from '@ioc:Adonis/Core/HttpContext'
-import { schema, rules } from '@ioc:Adonis/Core/Validator'
-import { Localizacao } from '../../Features/BancoQuestoes/Enums/EnumLocalizacao'
 import Exam from 'App/Models/Exam'
+import ExameValidator from 'App/Validators/ExameValidator'
 
 export default class ExamsController {
   public async NovoExame({ auth, request, response }: HttpContextContract) {
     if(!auth.user?.admin){
       return response.status(401).json({ error: "Você não tem Autorização"})
     }
+    const novoExam = await request.validate(ExameValidator)
+    
     const exam = new Exam()
-
-    const validationSchema = schema.create({
-      exame: schema.string({ trim: true }, [rules.unique({ table: 'exams', column: 'exam' })]),
-      localizacao: schema.enum(Object.values(Localizacao)),
-    })
-
-    const novoExam = await request.validate({
-      schema: validationSchema,
-    })
 
     exam.user_id = auth.user?.id
     exam.exam = novoExam.exame
