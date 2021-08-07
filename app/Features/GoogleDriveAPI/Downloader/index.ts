@@ -33,16 +33,12 @@ export class DownloadGoogleDriveAPI{
     }, (err, response) => {
       if(err) {
         error = true
-        console.log(err);
         return error
       } 
       response.data.on('error', err => {
-        console.log(err)
         error = true
         return error
-      }).on('end', () => {
-        console.log(fileId)
-      })
+      }).on('end', () => {})
       .pipe(destinofs)
     })
 
