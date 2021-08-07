@@ -30,8 +30,8 @@ export default class Questions extends BaseSchema {
       table.enum('materia', Materias).notNullable()
       // Esse Campo precisa se enum com todas as frentes bem listadas
       table.enum('frente_1', Frentes).notNullable()
-      table.enum('frente_2', Frentes).notNullable()
-      table.enum('frente_3', Frentes).notNullable()
+      table.enum('frente_2', Frentes)
+      table.enum('frente_3', Frentes)
       table.enum('caderno', ['Azul', 'Amarelo', 'Rosa', 'Branco', 'Cinza'])
       table.integer('numero').unsigned()
       table.enum('alternativa', ['A', 'B', 'C', 'D', 'E']).notNullable()
