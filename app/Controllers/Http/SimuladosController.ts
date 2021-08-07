@@ -62,15 +62,7 @@ export default class SimuladosController {
       return response.status(401).json({ error: 'Você não tem Autorização' })
     }
 
-    const validationSchema = schema.create({
-      nome: schema.string({}, [rules.unique({ table: 'simulados', column: 'nome' })]),
-      idTipo: schema.number(),
-      questoes: schema.array().members(schema.number()),
-    })
-
-    const data = await request.validate({
-      schema: validationSchema,
-    })
+    const data = await request.validate(SimuladoValidator)
 
     const tipo = await TipoSimulado.findByOrFail('id', data.idTipo)
 
