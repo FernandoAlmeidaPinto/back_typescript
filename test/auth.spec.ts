@@ -116,4 +116,28 @@ test.group('Auth', () => {
 
     assert.equal(responseMe.body.nome, 'Teste')
   })
+
+  test('delete user', async (assert) => {
+    const sendAdmin = send;
+
+    sendAdmin.email = "admin@gmail.com"
+    sendAdmin.professor = 1
+    sendAdmin.password_confirmation = sendAdmin.password
+
+    const cadastro = await supertest(baseURL)
+                            .post('/cadastro')
+                            .expect(200)
+                            .send(sendAdmin)
+    assert.equal(cadastro.body.user.email, sendAdmin.email)
+    await Database.rawQuery(`update users set admin = true where id = ${cadastro.body.user.id}`)
+
+    await supertest(baseURL)
+      .get(`/deleteuser/${1}`)
+      .set({ Authorization: `bearer ${cadastro.body.token.token}` })
+      .expect(200)
+
+    const consulta = await Database.rawQuery('select * from users;')
+
+    assert.isTrue(consulta.rows.length == 1)
+  })
 })
