@@ -8,5 +8,5 @@ export type RespostaCorreta = {
 
 export type Resposta = {
     idQuestao: number
-    alternativa: string
+    RespostaEstudante: string
 }
