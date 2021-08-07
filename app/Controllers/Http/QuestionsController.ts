@@ -8,6 +8,7 @@ import ExcelQuestion from '../../Features/BancoQuestoes/ExcelQuestions'
 
 import ValidatorQuestion from '../../Validators/QuestionCreateValidator'
 
+import { replaceDir } from 'App/Features/BancoQuestoes/ReplaceDir'
 import fs from 'fs'
 
 
@@ -42,7 +43,7 @@ export default class QuestionsController {
     const name = `${new Date().getTime()}.${myImage.extname}`
 
     if (
-      !myImage.move('uploads/images', {
+      !myImage.move('../uploads/images', {
         name: name,
         overwrite: false,
       })
@@ -86,7 +87,7 @@ export default class QuestionsController {
 
     const questao = await Questao.findByOrFail('id', IdQuestao)
 
-    const path = this.replacePath(questao.imagemLink, 'images')
+    const path = replaceDir(questao.imagemLink, 'images')
 
     try {
       fs.unlinkSync(path)
@@ -110,7 +111,6 @@ export default class QuestionsController {
     if (!auth.user?.professor) {
       return response.status(401).json({ error: 'Você não tem Autorização' })
     }
-    
 
     const excel = request.file('planilha', {
       size: '2mb',
@@ -127,7 +127,7 @@ export default class QuestionsController {
     const nome = `${new Date().getTime()}.${excel.extname}`
 
     try {
-      await excel.move('uploads/excel/', {
+      await excel.move('../uploads/excel/', {
         name: nome,
         overwrite: true,
       })
@@ -136,30 +136,22 @@ export default class QuestionsController {
       return err
     }
 
-    const path = this.replacePath(nome, 'excel')
+    const path = replaceDir(nome, 'excel')
 
     const myFile = await readXlsxFile(path)
     
     const excelClass = new ExcelQuestion(myFile, auth.user?.id)
     const data = excelClass.verify()
 
-    /* if(data.resp) {
+    if(data.resp) {
       const errorCadastroFinal = await excelClass.CadastroQuestao1a1()
       data.log.concat(errorCadastroFinal)
     }
     
-    return response.status(200).json({ error: data.log }) */
+    return response.status(200).json({ error: data.log })
   }
   
   public async ListarQuestoes({ response }: HttpContextContract) {
     return response.json(await Questao.all())
-  }
-
-  // Essa Função não deveria estar aqui. Não é Responsabilidade do Controller fazer isso.
-  private replacePath(nome: string, pasta: string) : string {
-    if (process.platform.includes('win')) {
-      return __dirname.replace('app\\Controllers\\Http', `uploads\\${pasta}\\${nome}`)
-    }
-    return __dirname.replace('app/Controllers/Http', `uploads/${pasta}/${nome}`)
   }
 }
