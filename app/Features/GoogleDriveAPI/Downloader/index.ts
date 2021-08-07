@@ -10,9 +10,7 @@ export class DownloadGoogleDriveAPI{
 
   public Download(fileid: string, dest: string){
 
-    const nome = `${new Date().getTime()}.jpeg`
-
-    const destino = fs.createWriteStream(dest + nome)
+    const destino = fs.createWriteStream(dest)
     const {client_secret, client_id, redirect_uris} = credentials.installed;
     const oAuth2Client = new google.auth.OAuth2(client_id, client_secret, redirect_uris[0]);
 
