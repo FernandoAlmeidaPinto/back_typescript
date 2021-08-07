@@ -1,8 +1,7 @@
 import User from 'App/Models/User'
 import { DateTime } from 'luxon';
 
-export default class CreateUser {
-  public async createUser(userDetails: {
+export const createUser = async (userDetails: {
     email: string;
     password: string;
     nome: string;
@@ -13,7 +12,7 @@ export default class CreateUser {
     estado: string;
     cidade: string;
     professor: boolean;
-}, sobre: string) {
+}, sobre: string) => {
     try {
       const user = new User()
       user.email = userDetails.email
@@ -32,5 +31,4 @@ export default class CreateUser {
     } catch (err) {
       return {erro: true, errorlog: err, user: new User()}
     }
-  }
 }
