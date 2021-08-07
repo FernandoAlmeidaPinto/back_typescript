@@ -1,45 +1,20 @@
 import User from 'App/Models/User'
 import Token from 'App/Models/Token'
-import { schema, rules } from '@ioc:Adonis/Core/Validator'
 import { HttpContextContract } from '@ioc:Adonis/Core/HttpContext'
-import CreateUser from '../../Features/Auth/createUser'
+import { createUser } from '../../Features/Auth/createUser'
+import LoginValidator from 'App/Validators/LoginValidator'
+import RegisterValidator from 'App/Validators/RegisterValidator'
 
 export default class AuthController {
   public async register({ auth, request, response }: HttpContextContract) {
-    /**
-     * Validate user details
-     */
-    const validationSchema = schema.create({
-      email: schema.string({ trim: true }, [
-        rules.email(),
-        rules.unique({ table: 'users', column: 'email' }),
-      ]),
-      password: schema.string({ trim: true }, [rules.confirmed()]),
-      nome: schema.string({ trim: true }),
-      sobrenome: schema.string({}),
-      telefone: schema.string({ trim: true }),
-      genero: schema.string({}),
-      nascimento: schema.date({}),
-      estado: schema.string({}),
-      cidade: schema.string({}),
-      professor: schema.boolean(),
-    })
+    
+    const userDetails = await request.validate(RegisterValidator)
 
     const { sobre } = request.only(['sobre'])
 
-    const userDetails = await request.validate({
-      schema: validationSchema,
-    })
-
-    /**
-     * Create a new user
-     */
-
-    const createUser = new CreateUser()
-    const log : {erro: boolean, errorlog: string, user: User} = await createUser.createUser(userDetails, sobre)
+    const log : {erro: boolean, errorlog: string, user: User} = await createUser(userDetails, sobre)
 
     if(log.erro){
-      console.log(log.errorlog)
       return response.status(422).json(log.errorlog)
     }
 
