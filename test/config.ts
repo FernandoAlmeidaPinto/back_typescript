@@ -2,6 +2,8 @@ export const sleep = (ms) => {
     return new Promise(resolver => setTimeout(resolver, ms))
 }
 
+export const baseURL = `http://localhost:${process.env.PORT}`
+
 export const send = {
     email: 'test@gmail.com',
     password: '123456',
