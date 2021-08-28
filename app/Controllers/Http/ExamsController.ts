@@ -12,7 +12,7 @@ export default class ExamsController {
     const exam = new Exam()
 
     exam.user_id = auth.user?.id
-    exam.exam = novoExam.exame
+    exam.exam = novoExam.exame.toUpperCase()
     exam.localizacao = novoExam.localizacao
     await exam.save()
 

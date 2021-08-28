@@ -32,7 +32,7 @@ export default class ExcelQuestion {
       if(!this.verificarCadaQuestao(i)) {
         this.value = {
           ImagemLink: this.arrayExcel[i][0],
-          Exam: this.arrayExcel[i][1],
+          Exam: this.arrayExcel[i][1].toUpperCase(),
           Ano: this.arrayExcel[i][2],
           EnemArea: this.arrayExcel[i][3],
           Materia: this.arrayExcel[i][4],
