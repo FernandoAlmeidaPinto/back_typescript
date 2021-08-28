@@ -2,6 +2,7 @@ import { Indices } from './Tipos/Enem'
 import { EnemArea, Materias, Frentes, indices } from './ConstantesEnem'
 
 import { DownloadGoogleDriveAPI } from '../GoogleDriveAPI/Downloader/index'
+import { replaceDir } from './ReplaceDir'
 
 import Exam from 'App/Models/Exam'
 import Questoes from 'App/Models/Questoes'
@@ -113,7 +114,7 @@ export default class ExcelQuestion {
                 return true
 
               } catch (error) {
-                fs.unlinkSync(this.replacePath(nomearquivo, 'images'))
+                fs.unlinkSync(replaceDir(nomearquivo, 'images'))
                 meuRetorno.push(`{ error: Não foi possível cadastrar Questao ${this.ArrayReturn[i].ImagemLink}. ${error}}`)
                 return false
               }
@@ -138,7 +139,9 @@ export default class ExcelQuestion {
 
     const nomearquivo = `${new Date().getTime()}.jpeg`
 
-    if(fileid != '' && !GoogleDrive.Download(fileid, `uploads/images/${nomearquivo}`)){
+    const dest = replaceDir(nomearquivo, 'images')
+
+    if(fileid != '' && await GoogleDrive.Download(fileid, dest)){
       return nomearquivo
     }
     return ''  
