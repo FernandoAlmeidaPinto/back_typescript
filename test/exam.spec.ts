@@ -29,7 +29,7 @@ test.group('Exam', () => {
     await supertest(baseURL)
       .post('/novoexame')
       .expect(401)
-      .send({ exam: 'enem', location: 'BR' })
+      .send({ exam: 'Fuvest', location: 'SP' })
       .set({ Authorization: `bearer ${responseLogin.body.token.token}` })
   })
 
@@ -56,13 +56,7 @@ test.group('Exam', () => {
     await supertest(baseURL)
       .post('/novoexame')
       .expect(200)
-      .send({ exame: 'enem', localizacao: 'BR' })
-      .set({ Authorization: `bearer ${responseLogin.body.token.token}` })
-
-    await supertest(baseURL)
-      .post('/novoexame')
-      .expect(422)
-      .send({ exam: 'enem', localizacao: 'BR' })
+      .send({ exame: 'Fuvest', localizacao: 'SP' })
       .set({ Authorization: `bearer ${responseLogin.body.token.token}` })
     
     const respListExam = await supertest(baseURL)
@@ -78,11 +72,11 @@ test.group('Exam', () => {
       email: 'anotherTest@gmail.com',
       password: send.password,
     })
-
+   
     await supertest(baseURL)
       .post('/novoexame')
       .expect(422)
-      .send({ exame: 'enem', localizacao: 'BR' })
+      .send({ exam: 'Fuvest', localizacao: 'SP' })
       .set({ Authorization: `bearer ${responseLogin.body.token.token}` })
   })
 
