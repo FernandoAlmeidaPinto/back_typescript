@@ -1,4 +1,6 @@
-export const baseURL = 'http://localhost:8080'
+export const sleep = (ms) => {
+    return new Promise(resolver => setTimeout(resolver, ms))
+}
 
 export const send = {
     email: 'test@gmail.com',
