@@ -62,25 +62,24 @@ export default class ExcelQuestion {
 
   public async CadastroQuestao1a1(): Promise<string[]> {
 
+    const GoogleDrive = new DownloadGoogleDriveAPI()
+
     const meuRetorno: string[] = []
     const arrayPromisse: (() => Promise<boolean>)[] = []
 
     for (let i = 0; i < this.ArrayReturn.length; i++) {
+
+      const examId = await Exam.findBy('exam', this.ArrayReturn[i].Exam)
+
+      if(examId) {
         arrayPromisse.push(
           async (): Promise<boolean> => {
 
-            const examId = await Exam.findBy('exam', this.ArrayReturn[i].Exam)
+            const fileid = this.ArrayReturn[i].ImagemLink.split('https://drive.google.com/open?id=')[1]
 
-            if (examId === null) {
-              meuRetorno.push(`{ error: ${this.ArrayReturn[i].Exam} não existe no sistema}`)
-              return false
+            const nomearquivo = await this.DownloadImages(GoogleDrive, fileid)
+            await new Promise<void>(done => setTimeout(() => done(), 1000));
 
-            } 
-
-            const fileid = this.ArrayReturn[i].ImagemLink.split('id=')[1]
-            
-            const nomearquivo = this.DownloadImages(fileid)
-            
             if(nomearquivo === '') {
               meuRetorno.push(`{ error: Não foi possível localizar a imagem ${this.ArrayReturn[i].ImagemLink}}`)
               return false
@@ -110,9 +109,7 @@ export default class ExcelQuestion {
                 question.textoAlternativaE =  this.ArrayReturn[i].TextoAlternativaE
 
                 await question.save()
-
                 return true
-
               } catch (error) {
                 fs.unlinkSync(replaceDir(nomearquivo, 'images'))
                 meuRetorno.push(`{ error: Não foi possível cadastrar Questao ${this.ArrayReturn[i].ImagemLink}. ${error}}`)
@@ -121,22 +118,18 @@ export default class ExcelQuestion {
             }
           }
         )
+      meuRetorno.push(`{ error: ${this.ArrayReturn[i].Exam} não existe no sistema}`)
       }
-      
-      await Promise.all(arrayPromisse.map((elem) => elem()))
-      return meuRetorno
-  }
-
-  private replacePath(nome: string, pasta: string) : string {
-    if (process.platform.includes('win')) {
-      return __dirname.replace('Features\\BancoQuestoes', `uploads\\${pasta}\\${nome}`)
+        
+      await Promise.all(arrayPromisse.map(async (elem) => {
+        await new Promise<void>(done => setTimeout(() => done(), 1000));
+        elem()
+      }))
     }
-    return __dirname.replace('Features/BancoQuestoes', `uploads/${pasta}/${nome}`)
+    return meuRetorno
   }
 
-  private DownloadImages(fileid: string): string {
-    const GoogleDrive = new DownloadGoogleDriveAPI()
-
+  private async DownloadImages(GoogleDrive, fileid: string): Promise<string> {
     const nomearquivo = `${new Date().getTime()}.jpeg`
 
     const dest = replaceDir(nomearquivo, 'images')
