@@ -1,4 +1,4 @@
-import test from 'japa'
+/* import test from 'japa'
 
 import { DownloadGoogleDriveAPI } from '../app/Features/GoogleDriveAPI/Downloader/index'
 
@@ -34,4 +34,4 @@ test.group('Google Drive API', (group) => {
     assert.isTrue(GoogleDriveAPI.Download(fileid, 'uploads/images/teste/'))
 
   }) 
-})
+}) */
