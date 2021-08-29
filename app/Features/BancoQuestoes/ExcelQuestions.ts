@@ -158,7 +158,7 @@ export default class ExcelQuestion {
   }
 
   private LogGeneration(linha: number, coluna: number, arrayTest: any[], text: string) : boolean {
-    if(!arrayTest.includes(this.arrayExcel[linha][coluna])){
+    if(!this.comparaString(arrayTest, this.arrayExcel[linha][coluna])) {
       if((coluna === 6 || coluna === 7) && this.arrayExcel[linha][coluna] === null) {
         return false
       }
@@ -180,5 +180,13 @@ export default class ExcelQuestion {
     return this.errorFirst
   }
 
+  private comparaString(list: any[], valor: string) {
+    for(let index = 0; index < list.length; index++) {
+      if(valor !== null && String(list[index]).normalize('NFKC') === String(valor.normalize('NFKC'))){
+        return true
+      }
+    }
+    return false
+  }
   
 }
