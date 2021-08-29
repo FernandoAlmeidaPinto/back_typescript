@@ -2,6 +2,9 @@ import User from 'App/Models/User'
 import test from 'japa'
 import supertest from 'supertest'
 import { baseURL } from './config'
+import path from 'path'
+import fs from 'fs'
+import Database from '@ioc:Adonis/Lucid/Database'
 
 let send = {
   email: 'anotherTest2@gmail.com',
@@ -46,7 +49,7 @@ test.group('Question', (group) => {
       .send({ exame: 'enem', localizacao: 'BR' })
       .set({ Authorization: `bearer ${login.body.token.token}` })
 
-    const pathImage = __dirname + '/files/ImageTest.jpg'
+    const pathImage = __dirname + '/files/file_ok.jpeg'
 
     const responseQuestion = await supertest(baseURL)
       .post('/novaquestao')
@@ -75,12 +78,41 @@ test.group('Question', (group) => {
       .expect(200)
       .set({ Authorization: `bearer ${login.body.token.token}` })
 
-
     assert.equal(selectQuestion.body.materia, 'História')
 
     await supertest(baseURL)
       .delete(`/deletarquestao/${responseQuestion.body.id}`)
       .expect(200)
       .set({ Authorization: `bearer ${login.body.token.token}` })
+  })
+
+  test('create a lot of question', async () => {
+    const login = await supertest(baseURL).post('/login').expect(200).send({
+      email: "admin@gmail.com",
+      password: "123456",
+    })
+    
+    const arquivo = path.join(__dirname, '/files/test_banco2.xlsx')
+
+    await supertest(baseURL)
+      .post('/xlsx')
+      .set({ Authorization: `bearer ${login.body.token.token}` })
+      .attach('planilha', arquivo)
+      .expect(200)
+      .timeout(30000)
+
+    const questoes = await Database.rawQuery('select count(*) from questoes;')
+
+    console.log(questoes.rows[0])
+
+    //await Database.rawQuery('delete from questoes;')
+  }).timeout(30000)
+
+  test('verifica existência de arquivo', (assert) => {
+    const file_ok = path.join(__dirname, '/files/file_ok.jpeg')
+    const file_corrompido = path.join(__dirname, '/files/file_corrompido.jpeg')
+
+    assert.isTrue(fs.readFileSync(file_corrompido).length == 0)
+    assert.isTrue(fs.readFileSync(file_ok).length > 0)
   })
 })
