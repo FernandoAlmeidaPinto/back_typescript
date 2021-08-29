@@ -1,4 +1,5 @@
 import fs from "fs"
+import { sleep } from '../../../../test/config';
 const { google } = require('googleapis');
 
 const credentials = require('../config/credentials.json')
@@ -8,7 +9,7 @@ const TOKEN_PATH = require('../config/token.json')
 
 export class DownloadGoogleDriveAPI{
 
-  public Download(fileid: string, dest: string){
+  public async Download(fileid: string, dest: string): Promise<boolean>{
 
     const destino = fs.createWriteStream(dest)
     const {client_secret, client_id, redirect_uris} = credentials.installed;
@@ -16,32 +17,46 @@ export class DownloadGoogleDriveAPI{
 
     oAuth2Client.credentials = TOKEN_PATH
 
-    return !this.DownloadImageAuth(fileid, destino, oAuth2Client)
+    await this.DownloadImageAuth(fileid, destino, oAuth2Client)
+
+    await sleep(2000)
+
+    return this.verificaBaixou(destino)
     
   }
 
-  private DownloadImageAuth(fileId: string, destinofs: fs.WriteStream, auth: any): boolean{
+  private async DownloadImageAuth(fileId: string, destinofs: fs.WriteStream, auth: any): Promise<void>{
     const drive = google.drive({version: 'v3', auth});
 
-    let error = false
-
-    drive.files.get({
-      fileId: fileId,
-      alt: 'media'
-    },  {
-      responseType: 'stream'
-    }, (err, response) => {
-      if(err) {
-        error = true
-        return error
-      } 
-      response.data.on('error', err => {
-        error = true
-        return error
-      }).on('end', () => {})
-      .pipe(destinofs)
-    })
-
-    return error
+    await drive.files.get(
+      { fileId, alt: 'media' },
+      { responseType: 'stream' },
+      ).then((res, err) => {
+        let progress = 0
+        if(err) {
+          console.log('meu erro')
+          console.error(err)
+        }
+        res.data
+          .on('end', () => {
+            
+          })
+          .on('error', () => {})
+          .on('data', (resolve) => {
+            progress += resolve.length
+          })
+          .pipe(destinofs)
+      })
   }
+
+  private verificaBaixou(destinofs: fs.WriteStream): boolean {
+    
+    if(fs.readFileSync(destinofs.path).length > 0) {
+      console.log((fs.readFileSync(destinofs.path).length))
+      return true
+    } 
+    fs.unlinkSync(destinofs.path)
+    return false
+  }
+
 }
