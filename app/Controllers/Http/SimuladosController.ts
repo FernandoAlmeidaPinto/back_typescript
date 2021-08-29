@@ -73,22 +73,10 @@ export default class SimuladosController {
   }
 
   public async RespostaSimulado({ request }: HttpContextContract): Promise<RespostaCorreta[]> {
-    const validationSchema = schema.create({
-      ObjAnswer: schema.array().members(
-        schema.object().members({
-          idQuestao: schema.number(),
-          RespostaEstudante: schema.string(),
-        })
-      ),
-    })
 
-    await request.validate({
-      schema: validationSchema,
-    })
+    const respostaRecebida : Resposta[] = await request.only(['Resposta_Recebida'])
 
-    const ObjRespostasRecebidas: Resposta[] = request.input('ObjResposta')
-
-    const ObjResposta = new RespostasSimulado(ObjRespostasRecebidas)
+    const ObjResposta = new RespostasSimulado(respostaRecebida)
 
     const Resposta = await ObjResposta.VerificandoResposta()
 
