@@ -35,12 +35,12 @@ export default class Questions extends BaseSchema {
       table.enum('caderno', ['Azul', 'Amarelo', 'Rosa', 'Branco', 'Cinza'])
       table.integer('numero').unsigned()
       table.enum('alternativa', ['A', 'B', 'C', 'D', 'E']).notNullable()
-      table.text('texto_questao')
-      table.text('texto_alternativa_a')
-      table.text('texto_alternativa_b')
-      table.text('texto_alternativa_c')
-      table.text('texto_alternativa_d')
-      table.text('texto_alternativa_e')
+      table.text('texto_questao', 'longtext')
+      table.text('texto_alternativa_a', 'longtext')
+      table.text('texto_alternativa_b', 'longtext')
+      table.text('texto_alternativa_c', 'longtext')
+      table.text('texto_alternativa_d', 'longtext')
+      table.text('texto_alternativa_e', 'longtext')
       // Toda questão é cadastrada como pendente e precisa ser aprovada por um adm/professor
       table.integer('dificuldade').defaultTo(0).notNullable()
       // Quantidades de vezes que essa questão foi respondida
