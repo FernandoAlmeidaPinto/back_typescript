@@ -141,11 +141,10 @@ export default class QuestionsController {
     const myFile = await readXlsxFile(path)
     
     const excelClass = new ExcelQuestion(myFile, auth.user?.id)
-    const data = excelClass.verify()
+    const data = await excelClass.verify()
 
     if(data.resp) {
-      const errorCadastroFinal = await excelClass.CadastroQuestao1a1()
-      data.log.concat(errorCadastroFinal)
+      data.log = await excelClass.CadastroQuestao1a1()
     }
     
     return response.status(200).json({ error: data.log })

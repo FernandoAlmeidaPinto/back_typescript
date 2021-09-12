@@ -19,7 +19,8 @@ export class DownloadGoogleDriveAPI{
 
     await this.DownloadImageAuth(fileid, destino, oAuth2Client)
 
-    await sleep(2000)
+    await sleep(500)
+    console.log('to esperando')
 
     return this.verificaBaixou(destino)
     
@@ -32,7 +33,6 @@ export class DownloadGoogleDriveAPI{
       { fileId, alt: 'media' },
       { responseType: 'stream' },
       ).then((res, err) => {
-        let progress = 0
         if(err) {
           console.log('meu erro')
           console.error(err)
@@ -42,8 +42,7 @@ export class DownloadGoogleDriveAPI{
             
           })
           .on('error', () => {})
-          .on('data', (resolve) => {
-            progress += resolve.length
+          .on('data', () => {
           })
           .pipe(destinofs)
       })
@@ -52,7 +51,6 @@ export class DownloadGoogleDriveAPI{
   private verificaBaixou(destinofs: fs.WriteStream): boolean {
     
     if(fs.readFileSync(destinofs.path).length > 0) {
-      console.log((fs.readFileSync(destinofs.path).length))
       return true
     } 
     fs.unlinkSync(destinofs.path)
