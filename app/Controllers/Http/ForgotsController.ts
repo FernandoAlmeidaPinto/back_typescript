@@ -14,11 +14,7 @@ export default class ForgotsController {
   public async forgot({ request, response }: HttpContextContract) {
     const email = request.input('email')
 
-    const user = await User.findBy('email', email)
-
-    if (user === null) {
-      return response.status(409).json({ msg: 'Email não existe' })
-    }
+    const user = await User.findByOrFail('email', email)
 
     const random = await promisify(randomBytes)(24)
     const token = random.toString('hex')
@@ -34,7 +30,7 @@ export default class ForgotsController {
 
     await Mail.use('smtp').send((message) => {
       message
-        .from(Env.get('SMTP_USERNAME'))
+        .from(Env.get('SMTP_USERNAME') as string)
         .to(user.email)
         .subject('Esqueci a Senha - Você na Facul')
         .htmlView('forgot.edge', {
@@ -47,26 +43,22 @@ export default class ForgotsController {
   public async reset({ request, response }: HttpContextContract) {
     const { password, token } = request.only(['password', 'token'])
 
+    const userToken = await Token.findByOrFail('token', token)
+
+    if (isBefore(new Date(userToken.createdAt.toString()), subHours(new Date(), 2))) {
+      return response.status(400).json({ msg: 'validade do token expirou' })
+    }
+
+    await userToken.delete()
+
     try {
-      const userToken = await Token.findByOrFail('token', token)
 
-      if (isBefore(new Date(userToken.createdAt.toString()), subHours(new Date(), 2))) {
-        return response.status(400).json({ msg: 'validade do token expirou' })
-      }
+      const user = await User.findByOrFail('id', userToken.userId)
 
-      if (userToken.expiresAt === true) {
-        return response.status(400).json({ msg: 'validade do token expirou' })
-      }
+      user.password = password
 
-      userToken.expiresAt = true
-      await userToken.save()
+      await user.save()
 
-
-      const user = await User.query().preload('token')
-
-      user[0].password = password
-
-      await user[0].save()
     } catch (error) {
       console.log(error)
       return response.status(404).json({ message: error})
