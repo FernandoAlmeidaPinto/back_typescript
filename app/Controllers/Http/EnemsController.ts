@@ -9,6 +9,8 @@ import Frente from 'App/Models/Frente'
 
 export default class EnemsController {
 
+  //#region Create
+
   public async CreateEnemArea({ request, response }: HttpContextContract) {
     const userDetails = await request.validate(EnemAreaValidator)
 
@@ -39,36 +41,13 @@ export default class EnemsController {
     return response.status(200).json(frente.toJSON())
   }
 
-  public async DeleteEnemArea({ params, response }: HttpContextContract) {
-    const id = await params.id
+  //#endregion
 
-    const area = await EnemArea.findByOrFail('id', id)
+  //#region Read
 
-    await area.delete()
+  //#endregion
 
-    return response.status(200).json({ msg: 'Deletado '})
-  }
-
-  public async DeleteMateria({ params, response }: HttpContextContract) {
-    const id = await params.id
-
-    const materia = await Materia.findByOrFail('id', id)
-
-    await materia.delete()
-
-    return response.status(200).json({ msg: 'Deletado '})
-  }
-
-  public async DeleteFrente({ params, response }: HttpContextContract) {
-    const id = await params.id
-
-    const frente = await Frente.findByOrFail('id', id)
-
-    await frente.delete()
-
-    return response.status(200).json({ msg: 'Deletado '})
-  }
-
+  //#region Update
   public async UpdateEnemArea({ request, response }: HttpContextContract) {
     const { id, area } = await request.only([ 'id', 'area' ])
 
@@ -102,6 +81,42 @@ export default class EnemsController {
     return response.status(200).json(newFrente)
   }
 
+  //#endregion
+
+  //#region Delete
+  public async DeleteEnemArea({ params, response }: HttpContextContract) {
+    const id = await params.id
+
+    const area = await EnemArea.findByOrFail('id', id)
+
+    await area.delete()
+
+    return response.status(200).json({ msg: 'Deletado '})
+  }
+
+  public async DeleteMateria({ params, response }: HttpContextContract) {
+    const id = await params.id
+
+    const materia = await Materia.findByOrFail('id', id)
+
+    await materia.delete()
+
+    return response.status(200).json({ msg: 'Deletado '})
+  }
+
+  public async DeleteFrente({ params, response }: HttpContextContract) {
+    const id = await params.id
+
+    const frente = await Frente.findByOrFail('id', id)
+
+    await frente.delete()
+
+    return response.status(200).json({ msg: 'Deletado '})
+  }
+
+  //#endregion
+
+  
 
   public AllEnem({ response }: HttpContextContract) {
     const value = Enem

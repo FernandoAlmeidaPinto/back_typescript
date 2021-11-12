@@ -43,26 +43,50 @@ test.group('Question', (group) => {
       password: send.password,
     })
 
-    const responseExame = await supertest(baseURL)
+    const enem_area_test = "Ciências da Natureza"
+    const materia_test = "Física"
+    const frente_1_test = "Mecânica"
+
+    //#region Cadastro Exame, Area, Materia e Frente
+
+    const resExame = await supertest(baseURL)
       .post('/novoexame')
       .expect(200)
       .send({ exame: 'enem', localizacao: 'BR' })
       .set({ Authorization: `bearer ${login.body.token.token}` })
 
+    const resArea = await supertest(baseURL)
+      .post('/novaarea')
+      .expect(200)
+      .send({ enemArea: enem_area_test})
+      .set({ Authorization: `bearer ${login.body.token.token}` })
+    
+    const resMateria = await supertest(baseURL)
+      .post('/novamateria')
+      .expect(200)
+      .send({ materia: materia_test})
+      .set({ Authorization: `bearer ${login.body.token.token}` })
+
+    const resFrente = await supertest(baseURL)
+      .post('/novafrente')
+      .expect(200)
+      .send({ frente: frente_1_test})
+      .set({ Authorization: `bearer ${login.body.token.token}` })
+
+    //#endregion
+
     const pathImage = __dirname + '/files/file_ok.jpeg'
 
-    const responseQuestion = await supertest(baseURL)
+    const resQuestao = await supertest(baseURL)
       .post('/novaquestao')
       .expect(200)
-      .field('enemArea', 'Ciências Humanas')
+      .field('enemArea', resArea.body.id)
       .field('caderno', 'Branco')
       .field('numero', 1)
-      .field('materia', 'História')
-      .field('frente1', 'História do Brasil')
-      .field('frente2', 'Atualidade')
-      .field('frente3', 'Literatura')
+      .field('materia', resMateria.body.id)
+      .field('frente1', resFrente.body.id)
       .field('ano', 2019)
-      .field('examId', responseExame.body.id)
+      .field('examId', resExame.body.id)
       .field('alternativa', 'A')
       .field('textoQuestao', 'Texto da Questão')
       .field('textoAlternativaA', 'textoAlternativaA')
@@ -74,17 +98,17 @@ test.group('Question', (group) => {
       .set({ Authorization: `bearer ${login.body.token.token}` })
 
     const selectQuestion = await supertest(baseURL)
-      .get(`/selecionarquestao/${responseQuestion.body.id}`)
+      .get(`/selecionarquestao/${resQuestao.body.id}`)
       .expect(200)
       .set({ Authorization: `bearer ${login.body.token.token}` })
 
-    assert.equal(selectQuestion.body.materia, 'História')
+    assert.equal(selectQuestion.body.materia, resMateria.body.id)
 
     await supertest(baseURL)
-      .delete(`/deletarquestao/${responseQuestion.body.id}`)
+      .delete(`/deletarquestao/${resQuestao.body.id}`)
       .expect(200)
       .set({ Authorization: `bearer ${login.body.token.token}` })
-  })
+  }).timeout(30000)
 
   test('create a lot of question', async () => {
     const login = await supertest(baseURL).post('/login').expect(200).send({
@@ -101,18 +125,16 @@ test.group('Question', (group) => {
       .expect(200)
       .timeout(30000)
 
-    const questoes = await Database.rawQuery('select count(*) from questoes;')
-
-    console.log(questoes.rows[0])
+    const questoes = await Database.rawQuery('select count(*) from questoes;') 
 
     //await Database.rawQuery('delete from questoes;')
-  }).timeout(30000)
+  })
 
-  test('verifica existência de arquivo', (assert) => {
+  /* test('verifica existência de arquivo', (assert) => {
     const file_ok = path.join(__dirname, '/files/file_ok.jpeg')
     const file_corrompido = path.join(__dirname, '/files/file_corrompido.jpeg')
 
     assert.isTrue(fs.readFileSync(file_corrompido).length == 0)
     assert.isTrue(fs.readFileSync(file_ok).length > 0)
-  })
+  }) */
 })

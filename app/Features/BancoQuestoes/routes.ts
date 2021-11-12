@@ -8,23 +8,21 @@ Route.get('/listarexams', 'ExamsController.ListarExams').middleware('auth')
 
 //#region Area do Enem
 Route.post('/novaarea', 'EnemsController.CreateEnemArea').middleware('auth')
-Route.delete('/delexam/:id', 'EnemsController.DeleteEnemArea').middleware('auth')
-Route.patch('/atualizamateria', 'EnemsController.UpdateEnemArea').middleware('auth')
 //Route.get('/listarexams', 'EnemsController.ListarExams').middleware('auth')
+Route.patch('/atualizaarea', 'EnemsController.UpdateEnemArea').middleware('auth')
+Route.delete('/delarea/:id', 'EnemsController.DeleteEnemArea').middleware('auth')
 //#endregion
 
 //#region Materia
-Route.post('/novaarea', 'EnemsController.CreateEnemArea').middleware('auth')
-Route.delete('/delexam/:id', 'EnemsController.DeleteEnemArea').middleware('auth')
-Route.patch('/atualizamateria', 'EnemsController.UpdateEnemArea').middleware('auth')
-//Route.get('/listarexams', 'EnemsController.ListarExams').middleware('auth')
+Route.post('/novamateria', 'EnemsController.CreateMateria').middleware('auth')
+Route.patch('/atualizamateria', 'EnemsController.UpdateMateria').middleware('auth')
+Route.delete('/delmateria/:id', 'EnemsController.DeleteMateria').middleware('auth')
 //#endregion
 
 //#region Frente
-Route.post('/novaarea', 'EnemsController.CreateEnemArea').middleware('auth')
-Route.delete('/delexam/:id', 'EnemsController.DeleteEnemArea').middleware('auth')
-Route.patch('/atualizamateria', 'EnemsController.UpdateEnemArea').middleware('auth')
-//Route.get('/listarexams', 'EnemsController.ListarExams').middleware('auth')
+Route.post('/novafrente', 'EnemsController.CreateFrente').middleware('auth')
+Route.delete('/delfrente/:id', 'EnemsController.DeleteFrente').middleware('auth')
+Route.patch('/atualizafrente', 'EnemsController.UpdateFrente').middleware('auth')
 //#endregion
 
 //#region Questao

@@ -14,7 +14,7 @@ export default class Questoes extends BaseModel {
   @column({ columnName:'imagem_link' })
   public imagemLink: string
 
-  @column({ columnName:'enem_area' })
+  @column({ columnName:'enem_area_id' })
   public enemArea: number
 
   @column()
@@ -26,16 +26,16 @@ export default class Questoes extends BaseModel {
   @column()
   public numero: number
 
-  @column()
+  @column({ columnName:'materia_id' })
   public materia: number
 
-  @column({ columnName:'frente_1' })
+  @column({ columnName:'frente_1_id' })
   public frente1: number
 
-  @column({ columnName:'frente_2' })
+  @column({ columnName:'frente_2_id' })
   public frente2: number
 
-  @column({ columnName:'frente_3' })
+  @column({ columnName:'frente_2_id' })
   public frente3: number
 
   @column({ columnName:'texto_questao' })
