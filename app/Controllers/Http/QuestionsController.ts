@@ -29,7 +29,7 @@ export default class QuestionsController {
     questao.userId = auth.user.id
 
     try {
-      const enemArea = await EnemArea.findByOrFail('area', questionDetails.enemArea)
+      const enemArea = await EnemArea.findByOrFail('id', questionDetails.enemArea)
       questao.enemArea = enemArea.id
     } catch (error) {
       return response.status(400).json('Area do Enem não encontrada')
