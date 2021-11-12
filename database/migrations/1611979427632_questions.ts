@@ -1,5 +1,5 @@
 import BaseSchema from '@ioc:Adonis/Lucid/Schema'
-import { EnemArea, Materias, Frentes, StatusQuestion } from '../../app/Features/BancoQuestoes/ConstantesEnem'
+import { StatusQuestion } from '../../app/Features/BancoQuestoes/ConstantesEnem'
 
 export default class Questions extends BaseSchema {
   protected tableName = 'questoes'
@@ -45,7 +45,6 @@ export default class Questions extends BaseSchema {
         .onDelete('CASCADE')
         .notNullable()
 
-      table.enum('frente_1', Frentes).notNullable()
       table.integer('frente_1_id')
         .unsigned()
         .references('id')
@@ -91,8 +90,11 @@ export default class Questions extends BaseSchema {
       table.integer('vezes_respondida').defaultTo(0).notNullable()
 
       table.integer('quantidade_testes').defaultTo(0).notNullable()
+
       table.json('historico').defaultTo(0).notNullable()
+      
       table.enum('status', StatusQuestion).defaultTo('aprovada')
+      
       table.timestamps(true)
     })
   }
