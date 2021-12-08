@@ -32,3 +32,7 @@ Route.get('/listtypesimulate', 'SimuladosController.ListarTipos').middleware('au
 Route.post('/newsimulate', 'SimuladosController.CriarSimulado').middleware('auth')
 Route.get('/callsimulate/:id', 'SimuladosController.ChamarSimulado').middleware('auth')
 Route.post('/answersimulate', 'SimuladosController.RespostaSimulado').middleware('auth')
+
+Route.post('/geolocations', 'GeolocationsController.AddGeolocation').middleware('auth')
+Route.get('/geolocations', 'GeolocationsController.ListGeolocations')
+Route.delete('/geolocations/:id', 'GeolocationsController.DelGeolocation').middleware('auth')
