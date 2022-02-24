@@ -2,7 +2,7 @@ import { HttpContextContract } from '@ioc:Adonis/Core/HttpContext'
 import readXlsxFile from 'read-excel-file/node'
 
 import Exam from 'App/Models/Exam'
-import Questao from 'App/Models/Questoes'
+import Questoes from 'App/Models/Questoes'
 import ExcelQuestion from '../../Features/BancoQuestoes/ExcelQuestions'
 //import {EnemArea, Materias, Frentes, Alternativa } from '../../Features/BancoQuestoes/ConstantesEnem'
 
@@ -10,6 +10,9 @@ import ValidatorQuestion from '../../Validators/QuestionCreateValidator'
 
 import { replaceDir } from 'App/Features/BancoQuestoes/ReplaceDir'
 import fs from 'fs'
+import EnemArea from 'App/Models/EnemArea'
+import Materia from 'App/Models/Materia'
+import Frente from 'App/Models/Frente'
 
 
 export default class QuestionsController {
@@ -21,10 +24,49 @@ export default class QuestionsController {
 
     const questionDetails = await request.validate(ValidatorQuestion)
 
-    const myExam = await Exam.findBy('id', questionDetails.examId)
+    const questao = new Questoes()
 
-    if (myExam === null) {
-      return response.status(400).json({ msg: 'O Exame selecionado não encontrado em nossa base' })
+    questao.userId = auth.user.id
+
+    try {
+      const enemArea = await EnemArea.findByOrFail('id', questionDetails.enemArea)
+      questao.enemArea = enemArea.id
+    } catch (error) {
+      return response.status(400).json('Area do Enem não encontrada')
+    }
+    try {
+      const materia = await Materia.findByOrFail('id', questionDetails.materia)
+      questao.materia = materia.id
+    } catch (error) {
+      return response.status(400).json('Area do Enem não encontrada')
+    }
+    try {
+      const frente1 = await Frente.findByOrFail('id', questionDetails.frente1)
+      questao.frente1 = frente1.id
+    } catch (error) {
+      return response.status(400).json('Area do Enem não encontrada')
+    }
+    if(questionDetails.frente2) {
+      try {
+        const frente2 = await Frente.findByOrFail('id', questionDetails.frente2)
+        questao.frente2 = frente2.id
+      } catch (error) {
+        return response.status(400).json('Area do Enem não encontrada')
+      }
+    }
+    if(questionDetails.frente3) {
+      try {
+        const frente3 = await Frente.findByOrFail('id', questionDetails.frente3)
+        questao.frente3 = frente3.id
+      } catch (error) {
+        return response.status(400).json('Area do Enem não encontrada')
+      }
+    }
+    try {
+      const myExam = await Exam.findByOrFail('id', questionDetails.examId)
+      questao.examId = myExam.id
+    } catch (error) {
+      return response.status(400).json('Area do Enem não encontrada')
     }
 
     const myImage = request.file('image', {
@@ -52,12 +94,7 @@ export default class QuestionsController {
       return myImage.errors
     }
 
-    const questao = new Questao()
-
-    questao.userId = auth.user.id
     questao.imagemLink = name
-    questao.examId = questionDetails.examId
-    questao.enemArea = questionDetails.enemArea
     questao.caderno = questionDetails.caderno
     questao.numero = questionDetails.numero
     questao.textoQuestao = questionDetails.textoQuestao
@@ -66,10 +103,6 @@ export default class QuestionsController {
     questao.textoAlternativaC = questionDetails.textoAlternativaC
     questao.textoAlternativaD = questionDetails.textoAlternativaD
     questao.textoAlternativaE =  questionDetails.textoAlternativaE
-    questao.materia = questionDetails.materia
-    questao.frente1 = questionDetails.frente1
-    questao.frente2 = questionDetails.frente2
-    questao.frente3 = questionDetails.frente3
     questao.ano = questionDetails.ano
     questao.alternativa = questionDetails.alternativa
 
@@ -85,7 +118,7 @@ export default class QuestionsController {
 
     const IdQuestao = params.id
 
-    const questao = await Questao.findByOrFail('id', IdQuestao)
+    const questao = await Questoes.findByOrFail('id', IdQuestao)
 
     const path = replaceDir(questao.imagemLink, 'images')
 
@@ -101,7 +134,7 @@ export default class QuestionsController {
 
     const IdQuestao = params.id
 
-    const questao = await Questao.findByOrFail('id', IdQuestao)
+    const questao = await Questoes.findByOrFail('id', IdQuestao)
 
     return response.json(questao)
   }
@@ -151,6 +184,7 @@ export default class QuestionsController {
   }
   
   public async ListarQuestoes({ response }: HttpContextContract) {
-    return response.json(await Questao.all())
+    return response.json(await Questoes.all())
   }
+
 }
