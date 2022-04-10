@@ -1,9 +1,6 @@
 version: '3.3'
 services: 
   db:
-    build: 
-      dockerfile: ./docker/postgres.dockerfile
-      context: .
     image: postgres
     container_name: database
     ports: 
@@ -15,6 +12,7 @@ services:
     environment: 
       POSTGRES_PASSWORD: ${PG_PASSWORD}
       POSTGRES_USER: ${PG_USER}
+      POSTGRES_DB: ${PG_DB_NAME}
     networks: 
       - develop-networks
 
@@ -32,7 +30,6 @@ services:
     networks: 
       - develop-networks
     entrypoint: ["yarn"]
-    command: ['migration']
     command: ['production']
     depends_on: 
       - db
@@ -45,8 +42,9 @@ services:
       - ../templates:/etc/nginx/templates
     container_name: mynginx
     ports: 
-      - "80:80"
+      - "${PORT_NG}:80"
     restart: always
+    env_file: .env
     environment: 
       NGINX_HOST: "vcnafacul.com"
       NGINX_PORT: 80
