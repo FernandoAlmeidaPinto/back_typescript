@@ -1,57 +1,38 @@
 version: '3.3'
-services: 
+services:
   db:
-    image: postgres
     container_name: database
-    ports: 
+    image: postgres
+    ports:
       - ${PG_PORT}:5432
     volumes:
       - ../datadb:/var/lib/postgresql/data
     env_file: .env
     restart: always
-    environment: 
+    environment:
       POSTGRES_PASSWORD: ${PG_PASSWORD}
       POSTGRES_USER: ${PG_USER}
       POSTGRES_DB: ${PG_DB_NAME}
-    networks: 
+    networks:
       - develop-networks
 
-  app:
-    build: 
-      dockerfile: ./docker/node.dockerfile
-      context: .
-    image: mynode
-    container_name: mynode
-    working_dir: /var/www/
-    env_file: .env
-    restart: always
-    ports: 
-      - ${PORT}:3333
-    networks: 
-      - develop-networks
-    entrypoint: ["yarn"]
-    command: ['production']
-    depends_on: 
-      - db
   web:
-    build: 
+    container_name: mynginx
+    build:
       dockerfile: ./docker/nginx.dockerfile
       context: .
-    image: nginx:1.10.1-alpine
     volumes:
       - ../templates:/etc/nginx/templates
-    container_name: mynginx
-    ports: 
-      - "${PORT_NG}:80"
+    ports:
+      - "80:80"
     restart: always
     env_file: .env
-    environment: 
+    environment:
       NGINX_HOST: "vcnafacul.com"
       NGINX_PORT: 80
-    networks: 
+    networks:
       - develop-networks
-    depends_on: 
-      - app
+    depends_on:
       - db
 
 networks:

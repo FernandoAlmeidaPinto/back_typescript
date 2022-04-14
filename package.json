@@ -9,9 +9,9 @@
     "lint": "eslint . --ext=.ts",
     "format": "prettier --write .",
     "migration": "node ace migration:run --force",
-    "demigration": "node ace migration:rollback --force",
-    "migrationstatus": "node ace migration:status --force",
-    "production": "pm2-runtime server.js --name vcnafacul",
+    "rollback": "node ace migration:rollback --force",
+    "migration:status": "node ace migration:status --force",
+    "production": "./node_modules/.bin/pm2-runtime build/server.js --name vcnafacul",
     "test": "node -r @adonisjs/assembler/build/register japaFile.ts"
   },
   "devDependencies": {

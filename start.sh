@@ -8,3 +8,4 @@ yarn install
 cd ..
 docker-compose up --build -d
 yarn migration
+yarn production
