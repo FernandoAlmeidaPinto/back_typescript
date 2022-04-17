@@ -8,4 +8,5 @@ yarn install
 cd ..
 docker-compose up --build -d
 yarn migration
-yarn production
+
+pm2 start build/server.js --name vcnafacul
