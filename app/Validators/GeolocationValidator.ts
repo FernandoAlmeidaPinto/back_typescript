@@ -6,10 +6,8 @@ export default class GeolocationValidator {
   }
 
   public schema = schema.create({
-    name: schema.string(),
     latitude: schema.number(),
     longitude: schema.number(),
-    address: schema.string(),
   })
 
   public messages = {}

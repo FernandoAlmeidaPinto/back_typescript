@@ -10,17 +10,24 @@ export default class GeolocationsController {
     const newGeolocation = await request.validate(GeolocationValidator)
 
     const geolocation = new Geolocation()
-    geolocation.name = newGeolocation.name
     geolocation.latitude = newGeolocation.latitude
     geolocation.longitude = newGeolocation.longitude
-    geolocation.address = newGeolocation.address
 
     await geolocation.save()
 
     return geolocation
   }
 
-  public async ListGeolocations({ response }: HttpContextContract) {
+  public async ListGeolocations({ request, response }: HttpContextContract) {
+    if(request.input("latitude") && request.input("longitude")) {
+      const {latitude, longitude} = request.get();
+      const geolocation = await Geolocation.query()
+        .where("latitude", latitude)
+        .andWhere("longitude", longitude)
+
+      return response.status(200).json(geolocation)
+    }
+
     const allGeolocation = await Geolocation.all()
 
     return response.status(200).json(allGeolocation)
