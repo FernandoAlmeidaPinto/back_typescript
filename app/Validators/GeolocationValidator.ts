@@ -1,15 +1,32 @@
-import { schema } from '@ioc:Adonis/Core/Validator'
+import { schema, rules } from '@ioc:Adonis/Core/Validator'
 import { HttpContextContract } from '@ioc:Adonis/Core/HttpContext'
 
 export default class GeolocationValidator {
-  constructor (protected ctx: HttpContextContract) {
-  }
+  constructor(protected ctx: HttpContextContract) {}
 
   public schema = schema.create({
-    name: schema.string(),
     latitude: schema.number(),
     longitude: schema.number(),
-    address: schema.string(),
+    name: schema.string(),
+    cep: schema.string(),
+    state: schema.string(),
+    city: schema.string(),
+    neighborhood: schema.string(),
+    street: schema.string(),
+    number: schema.string(),
+    complement: schema.string(),
+    phone: schema.string.optional(),
+    whatsapp: schema.string.optional(),
+    email: schema.string.optional(),
+    email2: schema.string.optional(),
+    category: schema.string(),
+    site: schema.string.optional(),
+    linkedin: schema.string.optional(),
+    youtube: schema.string.optional(),
+    facebook: schema.string.optional(),
+    instagram: schema.string.optional(),
+    twitter: schema.string.optional(),
+    tiktok: schema.string.optional(),
   })
 
   public messages = {}

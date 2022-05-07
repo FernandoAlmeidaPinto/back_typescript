@@ -3,8 +3,8 @@ import test from 'japa'
 import supertest from 'supertest'
 import { baseURL } from './config'
 import path from 'path'
-import fs from 'fs'
-import Database from '@ioc:Adonis/Lucid/Database'
+// import fs from 'fs'
+// import Database from '@ioc:Adonis/Lucid/Database'
 
 let send = {
   email: 'anotherTest2@gmail.com',
@@ -60,7 +60,7 @@ test.group('Question', (group) => {
       .expect(200)
       .send({ enemArea: enem_area_test})
       .set({ Authorization: `bearer ${login.body.token.token}` })
-    
+
     const resMateria = await supertest(baseURL)
       .post('/novamateria')
       .expect(200)
@@ -115,7 +115,7 @@ test.group('Question', (group) => {
       email: "admin@gmail.com",
       password: "123456",
     })
-    
+
     const arquivo = path.join(__dirname, '/files/test_banco2.xlsx')
 
     await supertest(baseURL)
@@ -125,7 +125,7 @@ test.group('Question', (group) => {
       .expect(200)
       .timeout(30000)
 
-    const questoes = await Database.rawQuery('select count(*) from questoes;') 
+    // const questoes = await Database.rawQuery('select count(*) from questoes;')
 
     //await Database.rawQuery('delete from questoes;')
   })

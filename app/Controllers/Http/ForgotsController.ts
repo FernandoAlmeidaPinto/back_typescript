@@ -11,7 +11,7 @@ import Mail from '@ioc:Adonis/Addons/Mail'
 import Env from '@ioc:Adonis/Core/Env'
 
 export default class ForgotsController {
-  public async forgot({ request, response }: HttpContextContract) {
+  public async forgot({ request }: HttpContextContract) {
     const email = request.input('email')
 
     const user = await User.findByOrFail('email', email)
@@ -64,6 +64,6 @@ export default class ForgotsController {
       return response.status(404).json({ message: error})
     }
 
-    
+
   }
 }
