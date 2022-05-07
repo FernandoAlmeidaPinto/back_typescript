@@ -1,6 +1,7 @@
 #!/bin/sh
 
 yarn
+npm i -g pm2
 yarn build
 cp .env ./build
 cd ./build
