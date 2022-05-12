@@ -19,12 +19,12 @@ export default class GeolocationsController {
     geolocation.neighborhood = newGeolocation.neighborhood
     geolocation.street = newGeolocation.street
     geolocation.number = newGeolocation.number
-    geolocation.complement = newGeolocation.complement
+    geolocation.complement = newGeolocation.complement ?? ''
     geolocation.phone = newGeolocation.phone ?? ''
     geolocation.whatsapp = newGeolocation.whatsapp ?? ''
     geolocation.email = newGeolocation.email ?? ''
     geolocation.email2 = newGeolocation.email2 ?? ''
-    geolocation.category = newGeolocation.category
+    geolocation.category = newGeolocation.category ?? ''
     geolocation.site = newGeolocation.site ?? ''
     geolocation.linkedin = newGeolocation.linkedin ?? ''
     geolocation.youtube = newGeolocation.youtube ?? ''

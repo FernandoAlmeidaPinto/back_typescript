@@ -29,8 +29,6 @@ export default class Geolocations extends BaseSchema {
       table.string('twitter')
       table.string('tiktok')
       table.timestamps(true)
-
-      table.unique(['latitude', 'longitude'])
     })
   }
 
